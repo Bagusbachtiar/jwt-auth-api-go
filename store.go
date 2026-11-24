@@ -1,4 +1,4 @@
-packahe main 
+package main 
 
 import (
 	"context"
@@ -25,20 +25,20 @@ type PostgresStore struct {
 	db *pgxpool.Pool
 }
 
-func NewPostgresStore(db *pgxpool.Pool) *postgresStore{
+func NewPostgresStore(db *pgxpool.Pool) *PostgresStore{
 	return &PostgresStore{db: db}
 }
 
 func (s *PostgresStore) CreateUser(ctx context.Context, email, passwordHash string) error {
-	query := `INSERT INTO user (email, password_hash) Values ($1, $2)`
+	query := `INSERT INTO users (email, password_hash) Values ($1, $2)`
 	_, err := s.db.Exec(ctx, query, email, passwordHash)
 	return err 
 }
 
-func (s *PostgresStore) GetUserByEmail(ctx context.Context, email string) (*User, error ) {
+func (s *PostgresStore) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	var u User
 	query := `SELECT id, email, password_hash, created_at FROM users WHERE email = $1`
-	err := s.db.QueryRow(ctx, query, email).Scan($u.ID, &u.Email, &u.PasswordHash, &u.CreatedAt)
+	err := s.db.QueryRow(ctx, query, email).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
